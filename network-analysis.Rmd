@@ -1,0 +1,164 @@
+---
+title: "NYC Campaign Finance Network Analysis"
+author: "Natalie O'Shea and Millie Olivia Symns"
+date: "`r format(Sys.time(), '%d %B %Y')`"
+output:
+  html_document:
+    theme: "cosmo"
+    toc: true
+    toc_float: true
+    code_folding: "show"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message=FALSE, warning=FALSE)
+```
+
+## Data Preparation
+
+First I need to load my data processing libraries and pull data from the NYC Open Data. I also check to make sure there are no duplicated candidate names by checking that the length of unique candidate ids matches the length of unique candidate names.
+
+```{r}
+# load libraries
+library(tidyverse)
+library(igraph)
+library(ggraph)
+
+# load data from NYC Open Data
+contributions <- RSocrata::read.socrata("https://data.cityofnewyork.us/resource/rjkp-yttg.json")
+
+# check that length of unique ids equals length of unique names
+length(unique(contributions$recipid))
+length(unique(contributions$recipname))
+```
+
+Next, I am going to wrangle the campaign contribution data into a network-friendly data format. I first simplify the contributions data frame by only saving relevant columns, removing contribution amounts less than or equal to zero, and merging multiple donations to the same candidate.
+
+```{r}
+# across all races
+contributions_simple <- contributions %>%
+  select(recipname, name, c_code, boroughcd, amnt) %>%
+  # add filters (to be implemented in interactive version)
+  filter(c_code %in% unique(contributions$c_code),
+         boroughcd %in% unique(contributions$boroughcd),
+         amnt > 0) %>%
+  # set amount to numeric
+  mutate(amnt = as.numeric(amnt)) %>%
+  # summarize multiple donations from one individual to the same candidate
+  group_by(recipname, name) %>%
+  summarize(amnt = sum(amnt)) %>%
+  ungroup()
+```
+
+Next, I generate a list of individuals that contributed to more than one campaign during the 2021 election cycle. I filter the simplified contributions data frame to only include these "double dippers" and only look at relatively large donations (an arbitrary threshold I set at $1000).
+
+```{r}
+# find individuals that contributed to more than one candidate
+double_dippers <- contributions_simple %>%
+  group_by(name) %>%
+  summarize(n = n()) %>%
+  filter(n > 1) %>%
+  arrange(desc(n)) %>%
+  ungroup()
+
+# save contributions only from individuals that contributed to more than one candidate
+network_data <- contributions_simple %>%
+  filter(name %in% double_dippers$name) %>%
+  rename(
+    "candidate" = recipname,
+    "contributor" = name,
+    "amount" = amnt
+  ) %>%
+  # only look at large donations
+  filter(amount >= 1000)
+```
+
+Finally, I create a dataframe of all possible combinations of candidates and calculate how many times an individual contributed to each of their campaigns. For instance, if an individual contributed to both both the Eric Adams and Scott Stringer campaigns, I count that as a shared donation under the `donations` column.
+
+```{r}
+# create a network of shared donations 
+candidate_network <- unique(network_data$candidate) %>%
+  # create matrix of all possible candidate combinations
+  combn(2) %>%
+  # transpose matrix into long format
+  t() %>%
+  # make data frame
+  data.frame() %>%
+  # rename columns
+  rename(
+    "from" = X1,
+    "to" = X2
+  ) %>%
+  # count length of intersections of candidates from a single contributor
+  mutate(donations = map2_dbl(from, to, ~length(intersect(network_data$contributor[network_data$candidate == .x],
+                                                          network_data$contributor[network_data$candidate == .y])))) %>%
+  # remove rows with no overlapping donations
+  filter(donations > 0) %>%
+  # arrange in descending order of shared donations
+  arrange(desc(donations))
+```
+
+## Data Visualization
+
+Now we can a simple network visualizing instances when two candidates received donations of at least $1000 from the same campaign contributor.
+
+```{r}
+# visualize
+candidate_network %>%
+  networkD3::simpleNetwork()
+```
+
+This graph is fun to play with but not super informative. Let's do a little additional network analysis to learn more about the network of large campaign contributions in New York City.
+
+### Calculate Centrality
+
+We can calculate and visualize node centrality quite easily using the `igraph` package. Individuals with high eigen values (a measure of centrality) are the most central to the network and received shared donations with the largest numbers of other candidates. Below, I label only individuals with an eigen value greater than 0.8.
+
+```{r}
+# save seed for graphing
+my_seed <- 8675309
+
+# create graph object
+graph_df <- candidate_network %>%
+  igraph::graph_from_data_frame(directed = FALSE)
+
+# set centralities as vertex properties
+V(graph_df)$degree <- degree(graph_df)
+V(graph_df)$betweenness <- betweenness(graph_df)
+V(graph_df)$eigen <- eigen_centrality(graph_df)$vector
+
+# visualize node centrality
+set.seed(my_seed)
+ggraph(graph_df, layout = "fr") +
+  geom_edge_link(color = "gray", alpha = 0.5, aes(width = donations), 
+                 show.legend = FALSE) +
+  geom_node_point(aes(color = eigen)) +
+  scale_color_gradient(low = "lightblue", high = "red") +
+  geom_node_text(aes(label = ifelse(eigen > 0.8, name, NA))) +
+  labs(color = "Centrality") +
+  theme_void()
+```
+
+### Detect Communities
+
+Finally, we can detect communities within our network using the Louvain algorithm, which maximizes the density of connections within subsets of individuals within the network.
+
+```{r}
+# detect communities using Louvain algorithm
+communities <- cluster_louvain(graph_df)
+
+# assign as a vertex property
+V(graph_df)$community <- membership(communities)
+
+# number and size of communities detected
+sizes(communities)
+
+# visualize communities
+set.seed(my_seed)
+ggraph(graph_df, layout = "fr") +
+  geom_edge_link(color = "gray", alpha = 0.5, show.legend = FALSE) +
+  geom_node_point(aes(color = as.factor(community))) +
+  labs(color = "Centrality") +
+  theme_void()
+```
+
