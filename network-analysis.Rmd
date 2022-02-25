@@ -53,7 +53,7 @@ contributions_simple <- contributions %>%
   ungroup()
 ```
 
-Next, we generate a list of individuals that contributed to more than one campaign during the 2021 election cycle. We then filter the simplified contributions data frame to only include these "double dippers" and only look at relatively large donations (an arbitrary threshold we set at $1000).
+Next, we generate a list of individuals that contributed to more than one campaign during the 2021 election cycle. We then filter the simplified contributions data frame to only include these "double dippers" and only look at relatively large donations (an arbitrary threshold we set at $1500).
 
 ```{r}
 # find individuals that contributed to more than one candidate
@@ -73,11 +73,13 @@ network_data <- contributions_simple %>%
     "amount" = amnt
   ) %>%
   # only look at large donations
-  filter(amount >= 1000)
+  filter(amount >= 1500)
 
 # view first few rows of data
 head(network_data)
 ```
+
+### Create Network Dataframe
 
 Finally, we can create a dataframe of all possible combinations of candidates and calculate how many times an individual contributed to each of their campaigns. For instance, if an individual contributed to both both the Eric Adams and Scott Stringer campaigns, we count that as a shared donation under the `donations` column.
 
@@ -109,7 +111,30 @@ head(candidate_network)
 
 ## Data Visualization
 
-Now we can create a simple network graph visualizing instances when two candidates received donations of at least $1000 from the same campaign contributor.
+### Heatmap
+
+Before we generate a network graph, we might simply want to plot the number of shared donations between candidates as a heatmap.
+
+```{r, dim = c(10, 10)}
+# reorder plotting data in alphabetical order
+plot_df <- candidate_network %>%
+  arrange(from, to)
+
+# create headmap
+ggplot(plot_df, aes(to, from, fill= donations)) + 
+  geom_tile(aes(width=0.9, height=0.9)) +
+  # force squares
+  coord_equal() +
+  # use colorblind-friendly viridis color palette
+  scale_fill_viridis_c() +
+  theme_minimal() +
+  # rotate x axis text
+  theme(axis.text.x = element_text(angle = 90))
+```
+
+### Network Graph
+
+Next we can create a simple network graph visualizing instances when two candidates received donations of at least $1000 from the same campaign contributor.
 
 ```{r}
 # visualize
@@ -119,13 +144,15 @@ candidate_network %>%
 
 This graph is fun to play with but not super informative. Let's do a little additional network analysis to learn more about the network of large campaign contributions in New York City.
 
+## Network Analysis
+
 ### Calculate Centrality
 
 We can calculate and visualize node centrality quite easily using the `igraph` package. Individuals with high eigen values (a measure of centrality) are the most central to the network and received shared donations with the largest numbers of other candidates. Below, we label only individuals with an eigen value greater than 0.8.
 
 ```{r}
 # save seed for graphing
-my_seed <- 8675309
+my_seed <- 123
 
 # create graph object
 graph_df <- candidate_network %>%
