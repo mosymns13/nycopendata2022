@@ -16,9 +16,12 @@ knitr::opts_chunk$set(echo = TRUE, message=FALSE, warning=FALSE)
 
 ## Data Preparation
 
-First I need to load my data processing libraries and pull data from the NYC Open Data. I also check to make sure there are no duplicated candidate names by checking that the length of unique candidate ids matches the length of unique candidate names.
+First we need to load our data processing libraries and pull data from the NYC Open Data. We also check to make sure there are no duplicated candidate names by checking that the length of unique candidate ids matches the length of unique candidate names. This let's us know that we can refer to each candidate by name in subsequent steps without worrying about whether there are any inconsistencies between candidate names and ids.
 
 ```{r}
+# install packages (uncomment and run if necessary)
+# install.packages(c("tidyverse", "igraph", "ggraph"))
+
 # load libraries
 library(tidyverse)
 library(igraph)
@@ -32,7 +35,7 @@ length(unique(contributions$recipid))
 length(unique(contributions$recipname))
 ```
 
-Next, I am going to wrangle the campaign contribution data into a network-friendly data format. I first simplify the contributions data frame by only saving relevant columns, removing contribution amounts less than or equal to zero, and merging multiple donations to the same candidate.
+Next, let's wrangle the campaign contribution data into a network-friendly data format. First, we simplify the contributions data frame by only saving relevant columns, removing contribution amounts less than or equal to zero, and merging multiple donations to the same candidate.
 
 ```{r}
 # across all races
@@ -50,7 +53,7 @@ contributions_simple <- contributions %>%
   ungroup()
 ```
 
-Next, I generate a list of individuals that contributed to more than one campaign during the 2021 election cycle. I filter the simplified contributions data frame to only include these "double dippers" and only look at relatively large donations (an arbitrary threshold I set at $1000).
+Next, we generate a list of individuals that contributed to more than one campaign during the 2021 election cycle. We then filter the simplified contributions data frame to only include these "double dippers" and only look at relatively large donations (an arbitrary threshold we set at $1000).
 
 ```{r}
 # find individuals that contributed to more than one candidate
@@ -71,9 +74,12 @@ network_data <- contributions_simple %>%
   ) %>%
   # only look at large donations
   filter(amount >= 1000)
+
+# view first few rows of data
+head(network_data)
 ```
 
-Finally, I create a dataframe of all possible combinations of candidates and calculate how many times an individual contributed to each of their campaigns. For instance, if an individual contributed to both both the Eric Adams and Scott Stringer campaigns, I count that as a shared donation under the `donations` column.
+Finally, we can create a dataframe of all possible combinations of candidates and calculate how many times an individual contributed to each of their campaigns. For instance, if an individual contributed to both both the Eric Adams and Scott Stringer campaigns, we count that as a shared donation under the `donations` column.
 
 ```{r}
 # create a network of shared donations 
@@ -96,11 +102,14 @@ candidate_network <- unique(network_data$candidate) %>%
   filter(donations > 0) %>%
   # arrange in descending order of shared donations
   arrange(desc(donations))
+
+# view first few rows of data
+head(candidate_network)
 ```
 
 ## Data Visualization
 
-Now we can a simple network visualizing instances when two candidates received donations of at least $1000 from the same campaign contributor.
+Now we can create a simple network graph visualizing instances when two candidates received donations of at least $1000 from the same campaign contributor.
 
 ```{r}
 # visualize
@@ -112,7 +121,7 @@ This graph is fun to play with but not super informative. Let's do a little addi
 
 ### Calculate Centrality
 
-We can calculate and visualize node centrality quite easily using the `igraph` package. Individuals with high eigen values (a measure of centrality) are the most central to the network and received shared donations with the largest numbers of other candidates. Below, I label only individuals with an eigen value greater than 0.8.
+We can calculate and visualize node centrality quite easily using the `igraph` package. Individuals with high eigen values (a measure of centrality) are the most central to the network and received shared donations with the largest numbers of other candidates. Below, we label only individuals with an eigen value greater than 0.8.
 
 ```{r}
 # save seed for graphing
@@ -130,7 +139,7 @@ V(graph_df)$eigen <- eigen_centrality(graph_df)$vector
 # visualize node centrality
 set.seed(my_seed)
 ggraph(graph_df, layout = "fr") +
-  geom_edge_link(color = "gray", alpha = 0.5, aes(width = donations), 
+  geom_edge_link(color = "gray", alpha = 0.5,  
                  show.legend = FALSE) +
   geom_node_point(aes(color = eigen)) +
   scale_color_gradient(low = "lightblue", high = "red") +
