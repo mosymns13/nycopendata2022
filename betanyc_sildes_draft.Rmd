@@ -1,0 +1,188 @@
+---
+title: "BetaNYC Network Analysis Presentation"
+author: "Natalie O'Shea & Millie O. Symns"
+output:
+  xaringan::moon_reader:
+    self_contained: TRUE
+    anchor_sections: FALSE
+    seal: false
+    css:
+      - default
+      - theme.css
+    lib_dir: libs
+    nature:
+      ratio: 16:9
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+background-image: url(photos/anderson-rian-uIE9f6gV8rI-unsplash.jpg)
+background-size: cover
+class: left, bottom
+
+```{r, xaringanExtra-share-again, echo=FALSE}
+#xaringanExtra::use_share_again()
+```
+
+```{r libraries, include = FALSE}
+extrafont::loadfonts()
+```
+
+```{r, chunk-setup, include = FALSE}
+knitr::opts_chunk$set(fig.retina = 3, 
+                      fig.align = 'center',
+                      warning = FALSE, 
+                      message = FALSE)
+```
+
+```{css, echo=FALSE}
+code.r.hljs.remark-code {
+  position: relative;
+  overflow-x: hidden;
+}
+
+code.r.hljs.remark-code:hover {
+  overflow-x: visible;
+  width: 500px;
+  border-style: solid;
+}
+```
+
+
+
+.my-black[
+# NYC Campaign Finance Network Analysis
+**Natalie O'Shea and Millie Olivia Symns**  
+**BetaNYC | March 6, 2022**
+]
+
+---
+
+# QUICK NOTES
+
+#### This is a skeleton draft of the content for the slides
+
+Ideas on flow: 
+- Introduction of us
+- Layout Agenda
+- Background story to why we are here today 
+- Going over the basics of network analysis 
+- Quick breakdown on our tool of choice - R, RStudio Cloud?
+- Live coding/walkthrough of Rmd
+- Free exploration time?
+- Closing remarks/conclusions + questions
+- Thank you slide with contact information
+
+Proposed presentation flow: 
+- Natalie --> intro, agenda, backstory
+- Millie --> basics explainations, set up intructions
+- Natalie --> Live coding while Millie --> work around the room
+- Millie --> future inspirations
+- Natalie --> closing + thank you
+
+---
+
+
+class: transition-gradient-green, center, middle
+
+.pull-left[
+.my-white[
+### Natalie O'Shea
+<br>
+### Fact #1
+### Fact #2
+### Fact #3
+]
+]
+
+.pull-right[
+
+### Millie O. Symns
+<br>
+### Fact #1
+### Fact #2
+### Fact #3
+]
+
+---
+
+class: transition-gradient-green, left, middle
+
+.pull-left[
+.my-white[
+# Agenda
+
+### - Intro to R
+### - Background + NYC Open Data
+### - Defining Network Analysis
+### - Walkthrough 
+### - Live Coding
+]
+]
+---
+
+### Technical Set up
+
+Fill in any details about making sure all systems are set (whether markdown or R script) and using the cloud.
+
+---
+
+### Tell a story
+
+- Why are we doing this today?
+- What are the questions or problems we are hoping to solve?
+
+---
+
+# What is a network analysis?
+
+--
+
+### Wikipedia: Social network analysis is the process of investigating social structures through the use of networks and graph theory.
+
+--
+### Simply stating ... 
+
+--
+.my-green[
+## Looking at relationships between people and creating visuals to represent it
+]
+
+---
+
+#Defining terms 
+ - Nodes 
+ - Edges
+ - Centrality Measures 
+
+Helpful article: https://builtin.com/data-science/social-network-analysis 
+---
+
+# Why R?
+
+- describe how R is our tool of choice for analysis 
+- R community and subcommunites
+- Describe tools being used 
+
+---
+
+# Demo of analysis
+
+Live walkthrough 
+
+--- 
+# Network Analysis Inspiration
+
+Look for datasets that records actiosn from people
+ - Reviews on products
+ - Voting 
+ - Social connections 
+ 
+ 
+Data Set Collection made through Scout of NYC Open DataSets for Network Analysis: https://scout.tsdataclinic.com/collection/Network%20Analysis%20Inspo/3khw-qi8f,djnb-wcxt,m6nq-qud6
+
+---
+
+
+

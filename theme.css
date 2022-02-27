@@ -1,0 +1,56 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Oxygen&display=swap');
+
+body {
+  font-family: 'Montserrat', light-300;
+}
+
+h1, h2, h3 {
+  font-family: 'Oxygen', light-300;
+}
+
+.remark-code, .remark-inline-code {
+  font-family: 'Roboto Mono', monospace;
+}
+
+/* Color Variables */ 
+:root {
+--Black: #000000;
+--White: #FFFFFF;
+--Green: #005950;
+--Blue: #002f44;
+--Peach: #ec4067;
+
+}
+
+/* Font Color */
+.my-white{ color: var(--White);}
+.my-black{ color: var(--Black);}
+.my-green{ color: var(--Green);}
+.my-blue{ color:var(--Blue);}
+.my-peach{color:var(--Peach);}
+
+/* Slides */
+.transition-slide-green {
+  background-color: var(--Green);
+}
+
+.transition-gradient-green{
+  background: linear-gradient(90deg, #005950 50%, #FFFFFF 50%);
+}
+
+.transition-slide-blue {
+  background-color: #002f44;
+}
+
+.transition-gradient-blue {
+  background: linear-gradient(90deg, #002f44 50%, #FFFFFF 50%);
+}
+
+/* Hiding Slide Number 
+.remark-slide-number { 
+  display: none; 
+}
+*/
+
+
