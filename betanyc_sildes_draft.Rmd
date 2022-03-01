@@ -17,7 +17,7 @@ output:
       countIncrementalSlides: false
 ---
 
-background-image: url(photos/anderson-rian-uIE9f6gV8rI-unsplash.jpg)
+background-image: url(photos/alina-grubnyak-ZiQkhI7417A-unsplash.jpg)
 background-size: cover
 class: left, bottom
 
@@ -83,26 +83,29 @@ Proposed presentation flow:
 
 ---
 
-
 class: transition-gradient-green, center, middle
 
 .pull-left[
 .my-white[
 ### Natalie O'Shea
 <br>
-### Fact #1
-### Fact #2
-### Fact #3
+#### Fact #1
+#### Fact #2
+#### Fact #3
 ]
 ]
 
 .pull-right[
 
 ### Millie O. Symns
+
+```{r, echo = FALSE, fig.align='center', out.width="50%"}
+knitr::include_graphics("photos/msymns_square_profile.jpg")
+```
 <br>
-### Fact #1
-### Fact #2
-### Fact #3
+#### Data Analytics + Education Researcher 
+#### Using R for 3+ years
+#### Brooklyn Native
 ]
 
 ---
@@ -111,14 +114,27 @@ class: transition-gradient-green, left, middle
 
 .pull-left[
 .my-white[
-# Agenda
+## Agenda
 
-### - Intro to R
-### - Background + NYC Open Data
-### - Defining Network Analysis
-### - Walkthrough 
-### - Live Coding
+#### 20 Mins (1:00 - 1:20 PM)
+- Introductions + Background to R + RStudio Cloud Setup
+- Technical Setup (R, RStudio Cloud)
+
+#### 50 mins (1:20 - 2:10 PM)
+- Defining Network Analysis
+- Walkthrough 
+
+#### 20 mins (2:10 - 2:30 PM)
+- Exploration time
+- Closing remarks
+
 ]
+]
+
+.pull-right[
+```{r, echo = FALSE, fig.align='center', out.width="100%" , fig.cap= "Artwork by Allison Horst"}
+knitr::include_graphics("photos/ahorst_welcome_to_rstats_twitter.png")
+```
 ]
 ---
 
@@ -135,54 +151,148 @@ Fill in any details about making sure all systems are set (whether markdown or R
 
 ---
 
-# What is a network analysis?
+## What is a network analysis?
 
 --
 
-### Wikipedia: Social network analysis is the process of investigating social structures through the use of networks and graph theory.
+#### Wikipedia defines it as
+> the process of investigating social structures through the use of networks and graph theory.
+
 
 --
-### Simply stating ... 
+#### Simply stating ... 
 
 --
 .my-green[
-## Looking at relationships between people and creating visuals to represent it
+### You're looking at relationships between people (or organizations) and creating visuals to represent it
+]
+
+--
+This is done with some 
+- data, 
+- little bit of statistics, 
+- and graphing 
+
+---
+class: transition-slide-green, center, middle
+
+.my-white[ 
+## Let's go over some terms you will hear and see today
 ]
 
 ---
+## Social Network Terms
 
-#Defining terms 
- - Nodes 
- - Edges
- - Centrality Measures 
+.pull-left[
+```{r, echo = FALSE, fig.align='center', out.width="75%" , fig.cap= "from Builtin Article"}
+knitr::include_graphics("photos/nodes_and_edges.png")
+```
+]
 
-Helpful article: https://builtin.com/data-science/social-network-analysis 
+.pull-right[
+
+### Nodes (the dots)
+> the people in your network
+
+
+### Edges (the lines)
+> the connections between people
+
+
+### Centrality Measures (the stat)
+> measures how important or influencial the node (person) in relation to the network
+
+]
+
+For details check out this helpful article: https://builtin.com/data-science/social-network-analysis
 ---
 
-# Why R?
+## R Terms 
 
+.pull-left[
+
+#### Libraries or Packages
+
+```{r packages, eval=FALSE, echo=TRUE}
+library(tidyverse)
+library(igraph)
+library(ggraph)
+```
+> A place where functions are held that will be use in our code
+
+#### RMarkdown (Rmd) [or Script]  
+> A place where code is written and can execute (run)
+
+--> OTHER NOTES TO REMOVE
 - describe how R is our tool of choice for analysis 
 - R community and subcommunites
 - Describe tools being used 
 
+]
+
+
+.pull-right[
+
+```{r, echo = FALSE, fig.align='center', out.width="75%" , fig.cap= "Artwork by Allison Horst"}
+knitr::include_graphics("photos/ahorst_heartyr.gif")
+```
+]
+
 ---
 
-# Demo of analysis
+class: transition-slide-green, center, middle
 
-Live walkthrough 
+.my-white[ 
+## Time to do a walkthrough! 
+]
 
---- 
-# Network Analysis Inspiration
+---
 
-Look for datasets that records actiosn from people
+## Network Analysis Inspiration
+
+Look for data sets that records actions from people. 
+
+Some examples include:
  - Reviews on products
  - Voting 
- - Social connections 
- 
- 
-Data Set Collection made through Scout of NYC Open DataSets for Network Analysis: https://scout.tsdataclinic.com/collection/Network%20Analysis%20Inspo/3khw-qi8f,djnb-wcxt,m6nq-qud6
+ - Social media connections 
+
+For NYC Open Data: 
+
+We created a data set collection using [Scout](https://scout.tsdataclinic.com/about) as a starting point for some inspriation to do your own network analysis.
+
+Link: https://scout.tsdataclinic.com/collection/Network%20Analysis%20Inspo/3khw-qi8f,djnb-wcxt,m6nq-qud6
 
 ---
 
+class: transition-slide-green, center, middle
 
+.my-white[ 
+## Time to explore! 
+]
+
+---
+
+## Thank you!
+
+It was lovely having you today! Feel free to connect with us :)
+
+
+.pull-left[
+
+### Natalie O'Shea
+
+#### Twitter: @_natalie_oshea
+#### Website: https://natalieoshea.github.io/website/
+
+]
+
+.pull-right[
+
+### Millie O. Symns
+
+#### Twitter: @millieosymns
+#### Website: https://milliesymns.com
+
+]
 
