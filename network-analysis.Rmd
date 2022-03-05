@@ -20,7 +20,7 @@ First we need to load our data processing libraries and pull data from the NYC O
 
 ```{r}
 # install packages (uncomment and run if necessary)
-# install.packages(c("tidyverse", "igraph", "ggraph"))
+# install.packages(c("tidyverse", "igraph", "ggraph", "RSocrata", "networkD3"))
 
 # load libraries
 library(tidyverse)
