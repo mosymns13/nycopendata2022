@@ -64,23 +64,52 @@ code.r.hljs.remark-code:hover {
 #### This is a skeleton draft of the content for the slides
 
 Ideas on flow: 
-- Introduction of us
 - Layout Agenda
-- Background story to why we are here today 
+- Introduction of us
+- Background story to why we are here today (DSxD plug)
+- Quick overview of R terminology
 - Going over the basics of network analysis 
-- Quick breakdown on our tool of choice - R, RStudio Cloud?
+- Walkthrough RStudio Cloud setup (panes layout, introduce cheat sheets and primers in left hand panel as learning resources)
 - Live coding/walkthrough of Rmd
-- Free exploration time?
+- Introduce a few other datasets to explore
 - Closing remarks/conclusions + questions
 - Thank you slide with contact information
 
 Proposed presentation flow: 
 - Natalie --> intro, agenda, backstory
 - Millie --> basics explainations, set up intructions
-- Natalie --> Live coding while Millie --> work around the room
+- Natalie --> Network basics, Live coding while Millie --> monitors chat
 - Millie --> future inspirations
 - Natalie --> closing + thank you
 
+---
+
+class: transition-gradient-green, left, middle
+
+.pull-left[
+.my-white[
+## Agenda
+
+#### 15 Mins (1:00 - 1:15 PM)
+- Introductions + Why Network Analysis
+- Background to R + RStudio Cloud Setup
+- Network Analysis Basics
+
+#### 35 mins (1:15 - 1:50 PM)
+- Live-code walkthrough analysis
+
+#### 10 mins (1:50 - 2:00 PM)
+- Additional datasets to explore
+- Closing remarks
+
+]
+]
+
+.pull-right[
+```{r, echo = FALSE, fig.align='center', out.width="100%" , fig.cap= "Artwork by Allison Horst"}
+knitr::include_graphics("photos/ahorst_welcome_to_rstats_twitter.png")
+```
+]
 ---
 
 class: transition-gradient-green, center, middle
@@ -88,10 +117,13 @@ class: transition-gradient-green, center, middle
 .pull-left[
 .my-white[
 ### Natalie O'Shea
+```{r, echo = FALSE, fig.align='center', out.width="50%"}
+knitr::include_graphics("photos/oshea_profile.jpg")
+```
 <br>
-#### Fact #1
-#### Fact #2
-#### Fact #3
+#### Analytics Consultant @ BetterUp
+#### R enthusiast since 2014
+#### CUNY-educated NYC transplant
 ]
 ]
 
@@ -110,48 +142,35 @@ knitr::include_graphics("photos/msymns_square_profile.jpg")
 
 ---
 
-class: transition-gradient-green, left, middle
+### Data Science by Design (DSxD)
+
+```{r, echo = FALSE, fig.align='center', out.width="60%"}
+knitr::include_graphics("photos/dsxd.jpeg")
+```
+
+To learn more about the Data Science by Design community visit http://datasciencebydesign.org/
+
+---
+
+### Why Network Analysis?
 
 .pull-left[
-.my-white[
-## Agenda
 
-#### 20 Mins (1:00 - 1:20 PM)
-- Introductions + Background to R + RStudio Cloud Setup
-- Technical Setup (R, RStudio Cloud)
-
-#### 50 mins (1:20 - 2:10 PM)
-- Defining Network Analysis
-- Walkthrough 
-
-#### 20 mins (2:10 - 2:30 PM)
-- Exploration time
-- Closing remarks
+- Recently attended the [Recurse Center](https://www.recurse.com/), a self-directed educational programming retreat, where I worked on various fun programming projects
+- As an anthropologist with a keen interest in how social change happens, network analysis had long been an area that I wanted to explore
+- Potential for network analysis to be leveraged in future DEIB work
 
 ]
-]
-
 .pull-right[
-```{r, echo = FALSE, fig.align='center', out.width="100%" , fig.cap= "Artwork by Allison Horst"}
-knitr::include_graphics("photos/ahorst_welcome_to_rstats_twitter.png")
+
+```{r, echo = FALSE, fig.align='center', out.width="75%" , fig.cap= "Never Graduate!"}
+knitr::include_graphics("photos/rc-logo.png")
 ```
 ]
----
-
-### Technical Set up
-
-Fill in any details about making sure all systems are set (whether markdown or R script) and using the cloud.
 
 ---
 
-### Tell a story
-
-- Why are we doing this today?
-- What are the questions or problems we are hoping to solve?
-
----
-
-## What is a network analysis?
+## What is Network Analysis?
 
 --
 
@@ -160,7 +179,7 @@ Fill in any details about making sure all systems are set (whether markdown or R
 
 
 --
-#### Simply stating ... 
+#### Simply stated ... 
 
 --
 .my-green[
@@ -180,31 +199,6 @@ class: transition-slide-green, center, middle
 ## Let's go over some terms you will hear and see today
 ]
 
----
-## Social Network Terms
-
-.pull-left[
-```{r, echo = FALSE, fig.align='center', out.width="75%" , fig.cap= "from Builtin Article"}
-knitr::include_graphics("photos/nodes_and_edges.png")
-```
-]
-
-.pull-right[
-
-### Nodes (the dots)
-> the people in your network
-
-
-### Edges (the lines)
-> the connections between people
-
-
-### Centrality Measures (the stat)
-> measures how important or influencial the node (person) in relation to the network
-
-]
-
-For details check out this helpful article: https://builtin.com/data-science/social-network-analysis
 ---
 
 ## R Terms 
@@ -230,7 +224,6 @@ library(ggraph)
 
 ]
 
-
 .pull-right[
 
 ```{r, echo = FALSE, fig.align='center', out.width="75%" , fig.cap= "Artwork by Allison Horst"}
@@ -240,10 +233,68 @@ knitr::include_graphics("photos/ahorst_heartyr.gif")
 
 ---
 
+### RStudio Cloud
+
+```{r, echo = FALSE, fig.align='center', out.width="85%"}
+knitr::include_graphics("photos/rstudio-cloud.png")
+```
+
+`install.packages(c("tidyverse", "igraph", "ggraph", "RSocrata", "networkD3"))`
+
+---
+
+## Social Network Terms
+
+.pull-left[
+```{r, echo = FALSE, fig.align='center', out.width="60%" , fig.cap= "from Builtin Article"}
+knitr::include_graphics("photos/nodes_and_edges.png")
+```
+]
+
+.pull-right[
+
+### Nodes or Vertices (the dots)
+> the people in your network
+
+
+### Edges (the lines)
+> the connections between people
+
+]
+
+For details check out this helpful article: https://builtin.com/data-science/social-network-analysis
+
+---
+
+## Social Network Terms
+
+.pull-left[
+```{r, echo = FALSE, fig.align='center', out.width="60%" }
+knitr::include_graphics("photos/bookcover.jpg")
+```
+]
+
+.pull-right[
+
+### Node Centrality
+
+  - How connected the individual is to other influential individuals
+  - Useful for discovering "superconnectors"
+
+
+### Detect Communities
+
+  - Highly connected clusters of individuals
+  - Useful for understanding what factors most influence community formation and whether communities are heavily segregated 
+
+]
+---
+
 class: transition-slide-green, center, middle
 
 .my-white[ 
 ## Time to do a walkthrough! 
+Follow along by coding alongside us or by running the Rmd in our [GitHub repo](https://github.com/natalieoshea/nycopendata2022/blob/master/network-analysis.Rmd)! 
 ]
 
 ---
@@ -265,17 +316,11 @@ Link: https://scout.tsdataclinic.com/collection/Network%20Analysis%20Inspo/3khw-
 
 ---
 
-class: transition-slide-green, center, middle
-
-.my-white[ 
-## Time to explore! 
-]
-
----
-
 ## Thank you!
 
-It was lovely having you today! Feel free to connect with us :)
+It was lovely having you today! Keep your eyes peeled for the upcoming "Future of Data Science" anthology by Data Science by Design (Twitter: `@DataScixDesign`)
+
+Feel free to connect with us :)
 
 
 .pull-left[
