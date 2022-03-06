@@ -1,0 +1,158 @@
+---
+title: "NYC Campaign Finance Network Analysis"
+author: "Natalie O'Shea and Millie Olivia Symns"
+date: "`r format(Sys.time(), '%d %B %Y')`"
+output:
+  html_document:
+    theme: "cosmo"
+    toc: true
+    toc_float: true
+    code_folding: "show"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message=FALSE, warning=FALSE)
+```
+
+## Data Preparation
+
+## Installing Packages
+```{r}
+# install packages (uncomment and run if necessary)
+install.packages(c("tidyverse", "igraph", "ggraph", "RSocrata", "networkD3"))
+
+# load libraries
+library(tidyverse)
+library(igraph)
+library(ggraph)
+```
+
+## Pulling in the data 
+
+```{r}
+# load data from NYC Open Data
+contributions <- RSocrata::read.socrata("https://data.cityofnewyork.us/resource/rjkp-yttg.json")
+
+```
+
+## Checking lengths
+```{r}
+# check that length of unique ids equals length of unique names
+# Add your code here
+
+```
+
+## Formatting Datasets
+```{r}
+# across all races
+contributions_simple <- contributions %>%
+  select(recipname, name, c_code, boroughcd, amnt) %>%
+  # add filters for later exploration
+  filter(amnt > 0) %>%
+  # set amount to numeric
+  mutate(amnt = as.numeric(amnt)) %>%
+  # summarize multiple donations from one individual to the same candidate
+  group_by(recipname, name) %>%
+  summarize(amnt = sum(amnt)) %>%
+  ungroup()
+```
+
+
+```{r}
+# find individuals that contributed to more than one candidate
+double_dippers <- contributions_simple %>% 
+  group_by(name) %>%
+  summarize(n = n()) %>%
+  filter(n > 1) %>%
+  arrange(desc(n)) %>%
+  ungroup()
+```
+
+```{r}
+
+# save contributions only from individuals that contributed to more than one candidate
+network_data <- contributions_simple %>%
+  filter(name %in% double_dippers$name) %>%
+  rename(
+    "candidate" = recipname,
+    "contributor" = name,
+    "amount" = amnt
+  ) %>%
+  # only look at large donations
+  filter(amount >= 1500)
+
+# view first few rows of data
+head(network_data)
+```
+
+### Create Network Dataframe
+
+
+```{r}
+# create a network of shared donations 
+candidate_network <- unique(network_data$candidate) %>%
+  # create matrix of all possible candidate combinations
+  combn(2) %>%
+  # transpose matrix into long format
+  t() %>%
+  # make data frame
+  data.frame() %>%
+  # rename columns
+  rename(
+    "from" = X1,
+    "to" = X2
+  ) %>%
+  # count length of intersections of candidates from a single contributor
+  mutate(donations = map2_dbl(from, to, ~length(intersect(network_data$contributor[network_data$candidate == .x],
+                                                          network_data$contributor[network_data$candidate == .y])))) %>%
+  # remove rows with no overlapping donations
+  filter(donations > 0) %>%
+  # arrange in descending order of shared donations
+  arrange(desc(donations))
+
+# view first few rows of data
+head(candidate_network)
+```
+
+## Data Visualization
+
+
+
+### Network Graph
+
+```{r}
+# visualize (add your code here)
+
+```
+
+## Network Analysis
+
+### Calculate Centrality
+
+```{r}
+# create graph object (add your code here)
+
+# set centralities as vertex properties
+V(graph_df)$degree <- degree(graph_df)
+V(graph_df)$betweenness <- betweenness(graph_df)
+V(graph_df)$eigen <- eigen_centrality(graph_df)$vector
+
+# visualize node centrality (add your code here) 
+
+```
+
+### Detect Communities
+
+```{r}
+# detect communities using Louvain algorithm
+communities <- cluster_louvain(graph_df)
+
+# assign as a vertex property
+V(graph_df)$community <- membership(communities)
+
+# number and size of communities detected
+sizes(communities)
+
+# visualize communities (add your code here)
+
+```
