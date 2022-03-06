@@ -13,11 +13,11 @@ contributions <- RSocrata::read.socrata("https://data.cityofnewyork.us/resource/
 
 # across all races
 contributions_simple <- contributions %>%
-  select(recipname, name, c_code, boroughcd, amnt) %>%
-  # add filters for later exploration
-  filter(amnt > 0) %>%
+  select(recipname, name, amnt) %>%
   # set amount to numeric
   mutate(amnt = as.numeric(amnt)) %>%
+  # add filters for later exploration
+  filter(amnt > 0) %>%
   # summarize multiple donations from one individual to the same candidate
   group_by(recipname, name) %>%
   summarize(amnt = sum(amnt)) %>%
@@ -80,18 +80,14 @@ graph_df <- candidate_network %>%
   igraph::graph_from_data_frame(directed = FALSE)
 
 # set centralities as vertex properties
-V(graph_df)$degree <- degree(graph_df)
-V(graph_df)$betweenness <- betweenness(graph_df)
 V(graph_df)$eigen <- eigen_centrality(graph_df)$vector
 
 # visualize node centrality
 ggraph(graph_df, layout = "fr") +
-  geom_edge_link(color = "gray", alpha = 0.5,
-                 show.legend = FALSE) +
+  geom_edge_link(color = "gray") +
   geom_node_point(aes(color = eigen)) +
   scale_color_gradient(low = "lightblue", high = "red") +
   geom_node_text(aes(label = ifelse(eigen > 0.8, name, NA))) +
-  labs(color = "Centrality") +
   theme_void()
 
 ### Detect Communities
@@ -107,9 +103,7 @@ sizes(communities)
 
 # visualize communities
 ggraph(graph_df, layout = "fr") +
-  geom_edge_link(color = "gray", alpha = 0.5, show.legend = FALSE) +
+  geom_edge_link(color = "gray") +
   geom_node_point(aes(color = as.factor(community))) +
   geom_node_text(aes(label = ifelse(community == 1, name, NA))) +
-  labs(color = "Community",
-       caption = "Community 1 members labelled") +
   theme_void()
