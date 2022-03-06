@@ -31,7 +31,6 @@ library(ggraph)
 
 ```{r}
 # load data from NYC Open Data
-contributions <- RSocrata::read.socrata("https://data.cityofnewyork.us/resource/rjkp-yttg.json")
 
 ```
 
@@ -47,10 +46,12 @@ contributions <- RSocrata::read.socrata("https://data.cityofnewyork.us/resource/
 # across all races
 contributions_simple <- contributions %>%
   select(recipname, name, c_code, boroughcd, amnt) %>%
-  # add filters for later exploration
-  filter(amnt > 0) %>%
   # set amount to numeric
   mutate(amnt = as.numeric(amnt)) %>%
+  # add filters for later exploration
+  filter(c_code %in% unique(contributions$c_code),
+         boroughcd %in% unique(contributions$boroughcd),
+         amnt > 0) %>%
   # summarize multiple donations from one individual to the same candidate
   group_by(recipname, name) %>%
   summarize(amnt = sum(amnt)) %>%
@@ -60,16 +61,10 @@ contributions_simple <- contributions %>%
 
 ```{r}
 # find individuals that contributed to more than one candidate
-double_dippers <- contributions_simple %>% 
-  group_by(name) %>%
-  summarize(n = n()) %>%
-  filter(n > 1) %>%
-  arrange(desc(n)) %>%
-  ungroup()
+
 ```
 
 ```{r}
-
 # save contributions only from individuals that contributed to more than one candidate
 network_data <- contributions_simple %>%
   filter(name %in% double_dippers$name) %>%
