@@ -197,7 +197,7 @@ ggraph(graph_df, layout = "fr") +
 
 ## Play Time!
 
-Congratulations, you just took a dataset from the NYC Open Data Portal, created a network from it, and analyzed the properties of that network all within an hour and a half... that's no small feat!  Feel free to use your remaining workshop time to play with the techniques you just learned. Some suggestions of what you might want to explore:
+Congratulations, you just took a dataset from the NYC Open Data Portal, created a network from it, and analyzed the properties of that network all within an hour... that's no small feat!  Feel free to use your remaining workshop time to play with the techniques you just learned. Some suggestions of what you might want to explore:
 
   - Alter some of the parameters of the above analysis. How do your results change when you look only at small donations (e.g. <$50)? You might even take a look at the [data dictionary](https://data.cityofnewyork.us/api/views/rjkp-yttg/files/9d7a9ca4-e4c5-4aa3-86c0-9777889842e9?download=true&filename=Data_Dictionary_Contributions.xlsx) and filter your results to only look at certain contributor types (e.g. labor unions: EMPO in the c_code column) or only contributions coming from outside the city ("Z" in the boroughcd column).
   - Explore some of the [other datasets available on the NYC Open Data Portal](https://opendata.cityofnewyork.us/data/#datasetscategory) and see if you can find additional datasets that might be interesting to explore using network analysis!
